@@ -19,7 +19,7 @@ add_library (simulator base_instrument.h
                           order.h position.h position.cc 
                           strategy.cc doctest.h strategy.h)
 
-add_executable(test_sim simulator.cc)
+add_executable(test_sim testcases.cc)
 
 target_link_libraries(test_sim PRIVATE simulator)
 
