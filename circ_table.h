@@ -6,7 +6,7 @@
 namespace Simulator {
 class TemporalTable {
 public:
-    TemporalTable(u_int rows, u_int cols) : currentRow(0),
+    TemporalTable(u_int rows, u_int cols) : currentRow(-1),
                                             NUM_ROWS(rows),
                                             NUM_COLS(cols),
                                             buffer(NUM_ROWS, std::vector<double>(NUM_COLS, 0.0)) {
@@ -14,8 +14,8 @@ public:
 
     void addRow(std::vector<double>& row) {
         if (row.size() != NUM_COLS) throw std::runtime_error("Invalid column size");
-        std::memcpy(buffer[currentRow].data(), row.data(), NUM_COLS * sizeof(double));
         currentRow = (currentRow + 1) % NUM_ROWS;
+        std::copy(row.begin(), row.end(), buffer[currentRow].begin());
     }
 
     int get_lagged_row(u_int lag) {

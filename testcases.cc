@@ -1,5 +1,6 @@
 ﻿#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
+#include <algorithm>
 #include <map>
 #include <string>
 #include <random>
@@ -11,9 +12,131 @@
 #include "strategy.h"
 #include "orderbook.h"
 #include "signal_builder.h"
+#include "circ_buffer.h"
 
 using namespace Simulator;
 using namespace doctest;
+
+TEST_CASE("Testing TemporalTable") {
+    constexpr u_int rows = 3;
+    constexpr u_int cols = 4;
+    TemporalTable table(rows, cols);
+
+    SUBCASE("Initial state") {
+        for (u_int i = 0; i < rows; ++i) {
+            const auto& row = table.get(i);
+            CHECK(row.size() == cols);
+            CHECK(std::all_of(row.begin(), row.end(), [](double val) { return val == 0.0; }));
+        }
+    }
+
+    SUBCASE("Adding and retrieving rows") {
+        std::vector<double> row1 = {1.1, 1.2, 1.3, 1.4};
+        std::vector<double> row2 = {2.1, 2.2, 2.3, 2.4};
+        std::vector<double> row3 = {3.1, 3.2, 3.3, 3.4};
+
+        table.addRow(row1);
+		auto result = table.get(0);
+        CHECK(std::equal(table.get(0).begin(), table.get(0).end(), row1.begin()));
+
+        table.addRow(row2);
+        CHECK(std::equal(table.get(0).begin(), table.get(0).end(), row2.begin()));
+        CHECK(std::equal(table.get(1).begin(), table.get(1).end(), row1.begin()));
+
+        table.addRow(row3);
+        CHECK(std::equal(table.get(0).begin(), table.get(0).end(), row3.begin()));
+        CHECK(std::equal(table.get(1).begin(), table.get(1).end(), row2.begin()));
+        CHECK(std::equal(table.get(2).begin(), table.get(2).end(), row1.begin()));
+    }
+
+    SUBCASE("Overwriting old rows") {
+        std::vector<double> row1 = {1.1, 1.2, 1.3, 1.4};
+        std::vector<double> row2 = {2.1, 2.2, 2.3, 2.4};
+        std::vector<double> row3 = {3.1, 3.2, 3.3, 3.4};
+        std::vector<double> row4 = {4.1, 4.2, 4.3, 4.4};
+
+        table.addRow(row1);
+        table.addRow(row2);
+        table.addRow(row3);
+        table.addRow(row4);
+
+        CHECK(std::equal(table.get(0).begin(), table.get(0).end(), row4.begin()));
+        CHECK(std::equal(table.get(1).begin(), table.get(1).end(), row3.begin()));
+        CHECK(std::equal(table.get(2).begin(), table.get(2).end(), row2.begin()));
+    }
+
+    SUBCASE("Adding multiple rows in a loop") {
+        for (u_int i = 0; i < 10; ++i) {
+            std::vector<double> row(cols, static_cast<double>(i));
+            table.addRow(row);
+            CHECK(std::equal(table.get(0).begin(), table.get(0).end(), row.begin()));
+            if (i > 0) {
+                std::vector<double> prev_row(cols, static_cast<double>(i - 1));
+                CHECK(std::equal(table.get(1).begin(), table.get(1).end(), prev_row.begin()));
+            }
+            if (i > 1) {
+                std::vector<double> prev_prev_row(cols, static_cast<double>(i - 2));
+                CHECK(std::equal(table.get(2).begin(), table.get(2).end(), prev_prev_row.begin()));
+            }
+        }
+    }
+}
+
+struct TestData {
+    int value;
+    bool operator==(const TestData& other) const { return value == other.value; }
+};
+
+TEST_CASE("Testing TemporalBuffer with custom class TestData") {
+    Simulator::TemporalBuffer<TestData> buffer(2); // Buffer for 2 lags
+
+    SUBCASE("Initial state") {
+        CHECK_NOTHROW(buffer.get(0));
+        CHECK_NOTHROW(buffer.get(1));
+        CHECK_NOTHROW(buffer.get(2));
+    }
+
+    SUBCASE("Adding and retrieving custom objects") {
+        buffer.add(TestData{1});
+        CHECK(buffer.get(0) == TestData{1});
+
+        buffer.add(TestData{2});
+        CHECK(buffer.get(0) == TestData{2});
+        CHECK(buffer.get(1) == TestData{1});
+
+        buffer.add(TestData{3});
+        CHECK(buffer.get(0) == TestData{3});
+        CHECK(buffer.get(1) == TestData{2});
+        CHECK(buffer.get(2) == TestData{1});
+    }
+
+    SUBCASE("Overwriting old values with custom objects") {
+        buffer.add(TestData{4});
+        buffer.add(TestData{5});
+        buffer.add(TestData{6});
+        CHECK(buffer.get(0) == TestData{6});
+        CHECK(buffer.get(1) == TestData{5});
+        CHECK(buffer.get(2) == TestData{4});
+    }
+
+    SUBCASE("Out of range access with custom objects") {
+        CHECK_THROWS_AS(buffer.get(3), std::out_of_range);
+        CHECK_THROWS_AS(buffer.get(-1), std::out_of_range);
+    }
+
+    SUBCASE("Adding multiple custom objects in a loop") {
+        for (int i = 1; i <= 1000; ++i) {
+            buffer.add(TestData{i});
+            CHECK(buffer.get(0) == TestData{i});
+            if (i > 1) {
+                CHECK(buffer.get(1) == TestData{i - 1});
+            }
+            if (i > 2) {
+                CHECK(buffer.get(2) == TestData{i - 2});
+            }
+        }
+    }
+}
 
 TEST_CASE("test of orderbook") {
 	double bid_price = 1000;
@@ -65,8 +188,11 @@ TEST_CASE("test of orderbook") {
 		}
 
 		Orderbook book(lob);
-		builder.add_lob(book);
-		auto data = builder.get_data();
+		auto start = std::chrono::high_resolution_clock::now();
+		auto signals = builder.add_book(book);
+		auto end = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+		std::cout << duration.count() << std::endl;
 	}
 
 	CHECK(ii == 1500);
