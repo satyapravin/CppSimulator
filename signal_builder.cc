@@ -285,7 +285,8 @@ void SignalBuilder::compute_signals() {
 
     if (processed_counter >= 10) {
         compute_volatility_signals();
-        normalize_volatility_signals();
+        normalize_volatility_1_signals();
+        normalize_volatility_10_signals();
     }
 
     processed_counter++;
@@ -295,8 +296,180 @@ void SignalBuilder::normalize_signals() {
     normalize_price_signals();
     normalize_spread_signals();
     normalize_volume_signals();
-    normalize_velocity_signals();
+    normalize_velocity_1_signals();
+    normalize_velocity_10_signals();
 }
+
+void SignalBuilder::normalize_volatility_1_signals() {
+    auto vol_1_sig = *raw_price_signal_velocity_1_ssqr;
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, mid_price_signal, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, norm_vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, micro_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, micro_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, micro_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, micro_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, micro_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, bid_fill_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, bid_fill_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, bid_fill_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, bid_fill_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, bid_fill_price_signal_4, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, ask_fill_price_signal_0, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, ask_fill_price_signal_1, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, ask_fill_price_signal_2, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, ask_fill_price_signal_3, norm_alpha);
+    NORMALIZE(vol_1_sig, raw_price_vol_1_mean, raw_price_vol_1_ssqr, ask_fill_price_signal_4, norm_alpha);
+}
+
+void SignalBuilder::normalize_volatility_10_signals() {
+    auto vol_10_sig = *raw_price_signal_velocity_10_ssqr;
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, mid_price_signal, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, norm_vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, micro_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, micro_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, micro_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, micro_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, micro_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, bid_fill_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, bid_fill_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, bid_fill_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, bid_fill_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, bid_fill_price_signal_4, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, ask_fill_price_signal_0, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, ask_fill_price_signal_1, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, ask_fill_price_signal_2, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, ask_fill_price_signal_3, norm_alpha);
+    NORMALIZE(vol_10_sig, raw_price_vol_10_mean, raw_price_vol_10_ssqr, ask_fill_price_signal_4, norm_alpha);
+}
+
+void SignalBuilder::normalize_velocity_1_signals() {
+    auto velocity_1_signal = *raw_price_signal_velocities_1;
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, mid_price_signal, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, norm_vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, micro_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, micro_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, micro_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, micro_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, micro_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, bid_fill_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, bid_fill_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, bid_fill_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, bid_fill_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, bid_fill_price_signal_4, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, ask_fill_price_signal_0, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, ask_fill_price_signal_1, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, ask_fill_price_signal_2, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, ask_fill_price_signal_3, norm_alpha);
+    NORMALIZE(velocity_1_signal, raw_price_signal_velocity_1_mean, raw_price_signal_velocity_1_ssqr, ask_fill_price_signal_4, norm_alpha);
+}
+
+
+void SignalBuilder::normalize_velocity_10_signals() {
+    auto velo_10_sig = *raw_price_signal_velocities_10;
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, mid_price_signal, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_bid_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_bid_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_bid_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_bid_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_bid_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_ask_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_ask_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_ask_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_ask_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, norm_vwap_ask_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, micro_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, micro_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, micro_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, micro_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, micro_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, bid_fill_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, bid_fill_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, bid_fill_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, bid_fill_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, bid_fill_price_signal_4, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, ask_fill_price_signal_0, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, ask_fill_price_signal_1, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, ask_fill_price_signal_2, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, ask_fill_price_signal_3, norm_alpha);
+    NORMALIZE(velo_10_sig, raw_price_signal_velocity_10_mean, raw_price_signal_velocity_10_ssqr, ask_fill_price_signal_4, norm_alpha);
+}
+
+void SignalBuilder::normalize_volume_signals() {
+    auto volume_signal = *raw_volume_signals;
+    NORMALIZE(volume_signal, raw_volume_signal_mean, raw_volume_signal_ssqr, volume_imbalance_signal_0, norm_alpha);
+    NORMALIZE(volume_signal, raw_volume_signal_mean, raw_volume_signal_ssqr, volume_imbalance_signal_1, norm_alpha);
+    NORMALIZE(volume_signal, raw_volume_signal_mean, raw_volume_signal_ssqr, volume_imbalance_signal_2, norm_alpha);
+    NORMALIZE(volume_signal, raw_volume_signal_mean, raw_volume_signal_ssqr, volume_imbalance_signal_3, norm_alpha);
+    NORMALIZE(volume_signal, raw_volume_signal_mean, raw_volume_signal_ssqr, volume_imbalance_signal_4, norm_alpha);
+}
+
 
 void SignalBuilder::normalize_spread_signals() {
     auto spread_signal = *raw_spread_signals;

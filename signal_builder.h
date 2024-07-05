@@ -171,9 +171,13 @@ private:
 
     void normalize_volume_signals();
 
-    void normalize_velocity_signals();
+    void normalize_velocity_1_signals();
 
-    void normalize_volatility_signals();
+    void normalize_velocity_10_signals();
+
+    void normalize_volatility_1_signals();
+
+    void normalize_volatility_10_signals();
 
     double compute_ofi(int lag);
 
