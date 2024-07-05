@@ -17,7 +17,9 @@ add_library (simulator base_instrument.h
                           exchange.h exchange.cc
                           inverse_instrument.h inverse_instrument.cc
                           order.h position.h position.cc 
-                          strategy.cc doctest.h strategy.h)
+                          strategy.cc doctest.h strategy.h
+                          orderbook.h orderbook.cc
+                          signal_builder.h signal_builder.cc)
 
 add_executable(test_sim testcases.cc)
 

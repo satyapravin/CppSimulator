@@ -1,14 +1,76 @@
 ﻿#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
-
+#include <map>
+#include <string>
+#include <random>
+#include <chrono>
 #include "inverse_instrument.h"
 #include "csv_reader.h"
 #include "position.h"
 #include "exchange.h"
 #include "strategy.h"
+#include "orderbook.h"
+#include "signal_builder.h"
 
 using namespace Simulator;
 using namespace doctest;
+
+TEST_CASE("test of orderbook") {
+	double bid_price = 1000;
+	double ask_price = 1000;
+	std::map<std::string, double> lob;
+	std::mt19937 rng;
+	std::random_device rd;
+	rng.seed(rd());
+	std::uniform_int_distribution<int> dist(1000, 5000);
+
+	for(int ii=0; ii < 20; ++ii) {
+		std::string bid_lbl = "bids[";
+		bid_lbl += std::to_string(ii) + "]";
+		std::string ask_lbl = "asks[";
+		ask_lbl += std::to_string(ii) + "]";
+		bid_price -= 0.5;
+		ask_price += 0.5;
+		lob[bid_lbl + ".price"] = bid_price;
+		lob[ask_lbl + ".price"] = ask_price;
+		lob[bid_lbl + ".amount"] = dist(rng);
+		lob[ask_lbl + ".amount"] = dist(rng);
+	}
+	Orderbook book(lob);
+	CHECK(book.ask_prices.size() == 20);
+	CHECK(book.bid_prices.size() == 20);
+	CHECK(book.ask_sizes.size() == 20);
+	CHECK(book.bid_sizes.size() == 20);
+	SignalBuilder builder;
+	std::vector<std::chrono::duration<double>> durations;
+
+	int ii = 0;
+	for (ii=0; ii < 1500; ++ii) {
+		std::map<std::string, double> lob;
+		double mid_price = dist(rng);
+		double bid_price = mid_price;
+		double ask_price = mid_price;
+
+		for(int jj=0; jj < 20; ++jj) {
+			std::string bid_lbl = "bids[";
+			bid_lbl += std::to_string(jj) + "]";
+			std::string ask_lbl = "asks[";
+			ask_lbl += std::to_string(jj) + "]";
+			bid_price -= 0.5;
+			ask_price += 0.5;
+			lob[bid_lbl + ".price"] = bid_price;
+			lob[ask_lbl + ".price"] = ask_price;
+			lob[bid_lbl + ".amount"] = dist(rng);
+			lob[ask_lbl + ".amount"] = dist(rng);
+		}
+
+		Orderbook book(lob);
+		builder.add_lob(book);
+		auto data = builder.get_data();
+	}
+
+	CHECK(ii == 1500);
+}
 
 TEST_CASE("testing the inverse_instrument") {
 	InverseInstrument instr("BTC", 0.5, 10.0, 0.0, 0.0005);
@@ -22,7 +84,7 @@ TEST_CASE("testing the inverse_instrument") {
 }
 
 TEST_CASE("testing the csv reader") {
-	CsvReader reader("..\\..\\..\\test.csv");
+	CsvReader reader("test.csv");
 	CHECK(reader.getTimeStamp() == 1704067200170770);
 	CHECK(reader.getDouble("bids[0].price") == Approx(42301.5));
 	CHECK(reader.getDouble("bids[1].price") == Approx(42301.0));
@@ -281,7 +343,7 @@ TEST_CASE("testing the position") {
 }
 
 TEST_CASE("testing exchange") {
-	CsvReader reader("..\\..\\..\\test.csv");
+	CsvReader reader("test.csv");
 	Exchange exch(reader, 5); // 10 microsecond delay is not practical in reality
 	const auto& row = exch.getObs();
 	CHECK(row.id == 1704067200170770);
@@ -339,7 +401,7 @@ TEST_CASE("testing exchange") {
 }
 
 TEST_CASE("test of strategy") {
-	CsvReader reader("..\\..\\..\\test.csv");
+	CsvReader reader("test.csv");
 	Exchange exch(reader, 5);
 	InverseInstrument instr("BTC", 0.5, 10.0, 0, 0.0005);
 	Strategy strategy(instr, exch, 1, 0, 0, 30.0, 5);
