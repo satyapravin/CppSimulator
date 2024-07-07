@@ -145,7 +145,7 @@ TEST_CASE("test of orderbook") {
 	std::mt19937 rng;
 	std::random_device rd;
 	rng.seed(rd());
-	std::uniform_int_distribution<int> dist(1000, 5000);
+	std::uniform_int_distribution<int> dist(1000, 50000);
 
 	for(int ii=0; ii < 20; ++ii) {
 		std::string bid_lbl = "bids[";
@@ -168,9 +168,9 @@ TEST_CASE("test of orderbook") {
 	std::vector<std::chrono::duration<double>> durations;
 
 	int ii = 0;
-	for (ii=0; ii < 1500; ++ii) {
+	for (ii=0; ii < 15000; ++ii) {
 		std::map<std::string, double> lob;
-		double mid_price = dist(rng);
+		double mid_price = 0.5 * (bid_price + ask_price) + dist(rng) / 2000;
 		double bid_price = mid_price;
 		double ask_price = mid_price;
 
@@ -188,14 +188,15 @@ TEST_CASE("test of orderbook") {
 		}
 
 		Orderbook book(lob);
-		auto start = std::chrono::high_resolution_clock::now();
 		auto signals = builder.add_book(book);
-		auto end = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-		std::cout << duration.count() << std::endl;
+		if (builder.is_data_ready()) {
+			CHECK(std::all_of(signals.begin(), signals.end(), [](double val) {return std::isfinite(val);}));
+			CHECK(std::all_of(signals.begin(), signals.end(), [](double val) { return std::abs(val) > 0;}));
+			CHECK(std::all_of(signals.begin(), signals.end(), [](double val) { return std::abs(val) < 10;}));
+		}
 	}
 
-	CHECK(ii == 1500);
+	CHECK(ii == 15000);
 }
 
 TEST_CASE("testing the inverse_instrument") {

@@ -186,7 +186,7 @@ private:
 private:
     u_long processed_counter = 0;
     u_int minimum_required = 30;
-    u_int norm_alpha = 2.0 / 1201;
+    double norm_alpha = 2.0 / 1201;
     TemporalTable bid_prices;
     TemporalTable ask_prices;
     TemporalTable bid_sizes;
