@@ -494,9 +494,9 @@ TEST_CASE("testing exchange") {
 	std::vector<Order> unacks = exch.getUnackedOrders();
 	CHECK(unacks.size() == 4);
 	exch.next();
-	const auto& bids = exch.getBids();
+	const auto& bids = exch.getBidOrders();
 	CHECK(bids.size() == 2);
-	const auto& asks = exch.getAsks();
+	const auto& asks = exch.getAskOrders();
 	CHECK(asks.size() == 2);
 	unacks = exch.getUnackedOrders();
 	CHECK(unacks.size() == 0);
@@ -508,21 +508,21 @@ TEST_CASE("testing exchange") {
 	CHECK(filled.orderId == 1);
 	CHECK(filled.amount == Approx(100.0));
 	CHECK(filled.price == Approx(42302));
-	const auto& bidsTwo = exch.getBids();
+	const auto& bidsTwo = exch.getBidOrders();
 	CHECK(bidsTwo.size() == 2);
-	const auto& asksTwo = exch.getAsks();
+	const auto& asksTwo = exch.getAskOrders();
 	CHECK(asksTwo.size() == 1);
 	exch.cancelBuys();
 	exch.next();
 	exch.cancelSells();
-	const auto& bidsThree = exch.getBids();
-	const auto& asksThree = exch.getAsks();
+	const auto& bidsThree = exch.getBidOrders();
+	const auto& asksThree = exch.getAskOrders();
 	CHECK(bidsThree.size() == 0);
 	CHECK(asksThree.size() == 1);
 	fills = exch.getFills();
 	CHECK(fills.size() == 0);
 	exch.next();
-	const auto& asksFour = exch.getAsks();
+	const auto& asksFour = exch.getAskOrders();
 	CHECK(asksFour.size() == 0);
 	CHECK(exch.getUnackedOrders().size() == 0);
 }
@@ -533,8 +533,8 @@ TEST_CASE("test of strategy") {
 	InverseInstrument instr("BTC", 0.5, 10.0, 0, 0.0005);
 	Strategy strategy(instr, exch, 1, 0, 0, 30.0, 5);
 	strategy.quote(0, 0, 30, 85);
-	const auto& bids = exch.getBids();
-	const auto& asks = exch.getAsks();
+	const auto& bids = exch.getBidOrders();
+	const auto& asks = exch.getAskOrders();
 	CHECK(bids.size() == 7);
 	CHECK(asks.size() == 1);
 }

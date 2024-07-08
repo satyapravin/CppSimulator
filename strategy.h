@@ -1,7 +1,9 @@
 #pragma once
 
+#include <memory>
 #include "exchange.h"
 #include "position.h"
+#include "signal_builder.h"
 
 namespace Simulator {
 	class Strategy {
@@ -14,6 +16,8 @@ namespace Simulator {
 
 		bool quote(int bid_tick_spread, int ask_tick_spread,
 			const double& buyVolumeAngle, const double& sellVolumeAngle);
+
+		void fetchInfo(PositionInfo& info, const double& bidPrice, const double& askPrice);
 	
 	private:
 		BaseInstrument& instrument;
@@ -22,7 +26,7 @@ namespace Simulator {
 		int order_id;
 		double maxFactor;
 		int max_ticks;
-
+		std::unique_ptr<SignalBuilder> signal_ptr;
 		void sendGrid(const double& angle, const DataRow& obs, OrderSide side);
 	};
 }

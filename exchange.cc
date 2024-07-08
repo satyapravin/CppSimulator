@@ -29,12 +29,12 @@ bool Exchange::next() {
 	return false;
 }
 
-const std::map<long, Order>& Exchange::getBids() const {
+const std::map<long, Order>& Exchange::getBidOrders() const {
 	return this->bid_quotes;
 }
 
-const std::map<long, Order>& Exchange::getAsks() const {
-	return this-> ask_quotes;
+const std::map<long, Order>& Exchange::getAskOrders() const {
+	return this->ask_quotes;
 }
 
 std::vector<Order> Exchange::getUnackedOrders() const {

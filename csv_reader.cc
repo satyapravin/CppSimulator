@@ -75,7 +75,7 @@ void CsvReader::readCSV(const std::string& filename) {
         long long id = std::stoll(cell);
 
         std::vector<double> values = parseLineToDoubles(line);
-        std::map<std::string, double> data;
+        std::unordered_map<std::string, double> data;
         for (size_t i = 0; i < values.size(); ++i) {
             data[headers[i]] = values[i];
         }

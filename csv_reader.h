@@ -1,18 +1,26 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <stdexcept>
 
 namespace Simulator {
     struct DataRow {
-        DataRow(long long anId, std::map<std::string, double>& dataMap) {
+        DataRow(long long anId, std::unordered_map<std::string, double>& dataMap) {
             this->id = anId;
             this->data = dataMap;
         }
 
         long long id = 0;
-        std::map<std::string, double> data;
+        std::unordered_map<std::string, double> data;
+
+        double getBestBidPrice() const {
+            return data.find("bids[0].price")->second;
+        }
+
+        double getBestAskPrice() const {
+            return data.find("asks[0].price")->second;
+        }
     };
 
     class CsvReader {

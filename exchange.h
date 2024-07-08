@@ -36,9 +36,9 @@ namespace Simulator {
         // Processes order cancellation for sell orders
         void cancelSells();
 
-         const std::map<long, Order>& getBids() const;
+         const std::map<long, Order>& getBidOrders() const;
 
-         const std::map<long, Order>& getAsks() const;
+         const std::map<long, Order>& getAskOrders() const;
 
          std::vector<Order> getUnackedOrders() const;
 

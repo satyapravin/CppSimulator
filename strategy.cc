@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
+#include "orderbook.h"
 
 using namespace Simulator;
 
@@ -12,13 +13,16 @@ Strategy::Strategy(BaseInstrument& instr, Exchange& exch, const double& balance,
 	:instrument(instr), exchange(exch),
 	 position(instr, balance, pos_amount, avg_price),
 	 order_id(0), maxFactor(areaFactor), max_ticks(maxTicks) {
+
 	assert(max_ticks >= 5);
+	signal_ptr = std::make_unique<SignalBuilder>(20, 20);
 }
 
 void Strategy::reset(int time_index, const double& position_amount, const double& avg_price) {
 	this->exchange.reset(time_index);
 	this->position.reset(position_amount, avg_price);
 	this->order_id = 0;
+	signal_ptr.reset(std::make_unique<SignalBuilder>(20, 20).release());
 }
 
 bool Strategy::quote(int bid_tick_spread, int ask_tick_spread, 
@@ -70,4 +74,8 @@ void Strategy::sendGrid(const double& angle, const DataRow& obs, OrderSide side)
 			area -= volume;
 		}
 	}
+}
+
+void Strategy::fetchInfo(PositionInfo& info, const double& bidPrice, const double& askPrice) {
+	return position.fetchInfo(info, bidPrice, askPrice);
 }
