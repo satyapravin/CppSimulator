@@ -31,5 +31,6 @@ namespace Simulator {
         void onFill(const Order& order, bool is_maker);
         double inventoryPnL(const double& price) const;
         double getInitialBalance() const { return initialBalance; }
+        long getNumberOfTrades() const { return numOfTrades; }
     };
 }

@@ -2,7 +2,7 @@
 
 using namespace Simulator;
 
-EnvAdaptor::EnvAdaptor(Strategy& strat, Exchange& exch, int interval, long period)
+EnvAdaptor::EnvAdaptor(Strategy& strat, Exchange& exch)
            :strategy(strat),
             exchange(exch) {
 }
@@ -13,6 +13,7 @@ bool EnvAdaptor::quote(int bid_spread, int ask_spread, const double& buyVolumeAn
 }
 
 void EnvAdaptor::reset(int time_index, const double& positionAmount, const double& averagePrice) {
+    numTrades = 0;
     return this->strategy.reset(time_index, positionAmount, averagePrice);
 }
 
@@ -26,5 +27,8 @@ PositionInfo EnvAdaptor::fetchPositionData() const {
 std::vector<double> EnvAdaptor::getState() const { std::vector<double> retval; return retval; }
 
 bool EnvAdaptor::hasFilled() const {
+    auto actualTrades = strategy.numOfTrades();
+    bool filled = numTrades <  actualTrades;
+    numTrades = actualTrades;
     return filled;
 }

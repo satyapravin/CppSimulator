@@ -14,6 +14,6 @@ public:
 private:
     Strategy& strategy;
     Exchange& exchange;
-    bool filled = false;
+    long numTrades = 0;
 };
 }

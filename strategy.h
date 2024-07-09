@@ -18,7 +18,8 @@ namespace Simulator {
 			const double& buyVolumeAngle, const double& sellVolumeAngle);
 
 		void fetchInfo(PositionInfo& info, const double& bidPrice, const double& askPrice);
-	
+                
+                long numOfTrades() const { return position.getNumberOfTrades(); }	
 	private:
 		BaseInstrument& instrument;
 		Exchange& exchange;
